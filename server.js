@@ -15,7 +15,7 @@ app.use(logger("dev")); // Morgan logger
 app.use(express.urlencoded({ extended: true })); // Parse body as JSON
 app.use(express.json()); //parse body as JSON
 app.use(express.static("public"));// Make public a static folder
-mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true }); //Connect to Mongo
+mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true, useFindAndModify: false }); //Connect to Mongo
 
 // Set Handlebars.
 var exphbs = require("express-handlebars");

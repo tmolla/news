@@ -18,7 +18,7 @@
         </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <input class="form-control mr-sm-2 search" type="search" placeholder="Search" aria-label="Search">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
       </form>
     </div>
@@ -94,18 +94,18 @@
          <div class="formContainer">
               <form>
                 <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Enter new note below and click on 'Submit' button to save:</label>
-                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                  {{!-- <label for="exampleFormControlTextarea1">Enter note here and click on 'Submit' button to save:</label> --}}
+                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Enter new note here and click on 'Add Note' button to save"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary saveNote">Add Note</button>
               </form>
           </div>
           <div class="noteContainer">
-            <div class="card">
+            {{!-- <div class="card">
               <div class="card-body">
                 This is some text within a card block
               </div>
-            </div>
+            </div> --}}
           </div>
       </div>
       <div class="modal-footer">

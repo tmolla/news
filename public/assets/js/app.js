@@ -1,59 +1,67 @@
-$(document).on("click", "#note", function() {
-  //When a note link is clicked on the a card:
-  //1. Get the article ID and save it to access the article and all associated notes
-  var thisId = $(this).attr("data-id");
-  console.log(thisId);
-  console.log("Calling get api");
-  // Now make an ajax call for the Article to get all associated Notes
+
+function displayNotes(articleID){
+  //Get all notes associated with the given article id
   $.ajax({
     method: "get",
-    url: "/articles/" + thisId
-  })
-   //When control returns
-    .then(function(data) {
-      //if there are notes, loop and display them in the modal card
-      $("#exampleModalScrollable .card-body").empty();
-      $("#exampleModalScrollable .card-body").append("<p> No notes add to this article </p");
-      if (data.note) {
-          console.log(data.note)
-          $("#exampleModalScrollable .card-body").empty();
-          $("#exampleModalScrollable .card-body").append("<p>" + data.note.title + "</p");
+    url: "/articles/" + articleID
+  }).then(function(data) {
+    //clear the note area
+    $("#exampleModalScrollable .noteContainer").empty();
+    $("#exampleModalScrollable").attr("data-id", articleID);
+
+    //if there are notes, loop and display them in the modal card
+    if (data.notes) {
+      for(var i=0; i < data.notes.length; i++){
+        var content = "<div class='card m-1'><div class='card-body'>" + 
+        "<p>" + data.notes[i]+ "</p><span class='removeNote' data-id='" + i + "'> 𝘅 </span></div></div>"
+        $(".noteContainer").append($(content));          
       }
-      $('#exampleModalScrollable').modal('show');
+    }
+    //display modal
+    $('#exampleModalScrollable').modal('show');
+  });
+}
+$(document).on("click", ".btn-outline-success", function(event) {
+  event.preventDefault();
+  const pattern = $(".search").val();
+  if (pattern) {
+    $.ajax({
+      method: "get",
+      url: "/search/" + pattern
     });
+  }
+});
+
+$(document).on("click", "#note", function() {
+  //display all notes for the given article
+  const thisId = $(this).attr("data-id");
+  displayNotes(thisId)
 });
 
 // When you click the savenote button
 $(document).on("click", ".saveNote", function(event) {
   event.preventDefault();
-  // Grab the id associated with the article from the submit button
-  var thisId = $(this).attr("data-id");
+  // Grab the article id and note text
+  var thisId = $("#exampleModalScrollable").attr("data-id");
+  var thisNote = $("#exampleFormControlTextarea1").val();
 
-  // Run a POST request to change the note, using what's entered in the inputs
+  // Run a POST request to save the note
   $.ajax({
     method: "POST",
-    url: "/articles/" + thisId,
+    url: "/note/" + thisId,
     data: {
-      // Value taken from title input
-      body: $("#exampleFormControlTextarea1").val(),
+      text: thisNote,
     }
   })
-    // With that done
-    .then(function(data) {
-      // Log the response
-      console.log(data);
-      // Empty the notes section
-      $(".card-body").empty();
-      $(".card-body").append("<p>" + data.note.title + "</p");
+    .then(function() { //display the notes and cleanup the textarea;
+      displayNotes(thisId)
+      $("#exampleFormControlTextarea1").val("");
     });
-
-  // Also, remove the values entered in the input and textarea for note entry
-  $("##exampleFormControlTextarea1").val("");
 });
 
 $(document).on("click", "#deleteArticle", function() {
   var article_id = $(this).attr("data-id");
-  // Run a POST request to change the note, using what's entered in the inputs
+  // Run a POST request to delete article
   $.ajax({
     method: "delete",
     url: "/articles/" + article_id,
@@ -64,25 +72,43 @@ $(document).on("click", "#deleteArticle", function() {
   );
 });
 
-// When you click the savenote button
+$(document).on("click", ".removeNote", function() {
+  const noteIndex = $(this).attr("data-id");
+  const articleId = $("#exampleModalScrollable").attr("data-id")
+  console.log(noteIndex)
+  console.log(articleId)
+  // Run a POST request to change the note
+  var id = {
+              "articleId": articleId, 
+              "noteIndex":noteIndex 
+            }
+  $.ajax({
+     method: "delete",
+     url: "/note/" + JSON.stringify(id),
+    }).then(function() {
+      displayNotes(articleId)
+    }
+  );
+});
+
+
+// When you click the save button
 $(document).on("click", "#saveArticle", function() {
   // Grab the id associated with the article from the submit button
-  var link = $(this).attr("data-link");
-  var title = $(this).attr("data-title");
-  var id = ($(this).attr("data-id"));
+  const link = $(this).attr("data-link");
+  const title = $(this).attr("data-title");
+  const id = ($(this).attr("data-id"));
 
   // Run a POST request to change the note, using what's entered in the inputs
   $.ajax({
     method: "POST",
     url: "/save",
     data: {
-      // Value taken from title input
       title: title,
-      // Value taken from note textarea
       link: link
     }
   }).then(function(data) {
-      // Remove the card that for saved article from the scraped card list
+      // Remove the saved card from the scraped card list
       $("[data-id=" + id + "]").remove();
     }
   );
