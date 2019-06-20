@@ -4,8 +4,8 @@ var mongoose = require("mongoose");
 
 
 //setup server listening port
-var PORT = 3000;
-//var PORT = process.env.PORT || 3000;
+//var PORT = 3000;
+var PORT = process.env.PORT || 3000;
 
 // Initialize Express
 var app = express();
@@ -14,7 +14,11 @@ var app = express();
 app.use(logger("dev")); // Morgan logger 
 app.use(express.urlencoded({ extended: true })); // Parse body as JSON
 app.use(express.json()); //parse body as JSON
+if (process.env.NODE_ENV === "production"){
+  app.use(express.static("client/build"));
+}
 app.use(express.static("public"));// Make public a static folder
+//mongoose.connect(process.env.MONGODB_URI || ???)
 mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true, useFindAndModify: false }); //Connect to Mongo
 
 // Set Handlebars.
