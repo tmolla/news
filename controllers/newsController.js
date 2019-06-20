@@ -1,12 +1,10 @@
 var express = require("express");
-// The following libraries are needed for scraping
 var axios = require("axios");
 var cheerio = require("cheerio");
 
 //Intialize database
 var db = require("../models");
 var router = express.Router();
-console.log("in the server side");
 // A GET route for scraping the echoJS website
 // Create all our routes and set up logic within those routes where required.
 router.get("/", function(req, res) {
@@ -17,8 +15,6 @@ router.get("/", function(req, res) {
       var hbsObject = {
         articles: dbArticle
       };
-      //console.log("Hello Telly");
-      //console.log(hbsObject.articles);
       res.render("index", hbsObject);
     })
     .catch(function(err) {
@@ -44,17 +40,16 @@ router.get("/viewArticles", function(req, res) {
       res.json(err);
     });
 });
+//router.get("/search", function(req, res) {
 router.get("/search/:pattern", function(req, res) {
-  const searchString = "/" + req.params.pattern  + "/";
-  console.log(searchString)
-  db.Article.find({title : {$regex: "/" + searchString + "/" ,$options:'i'}})
+  const searchString =  new RegExp(req.params.pattern);
+  db.Article.find({title : {$regex: searchString ,$options:'i'}})
   .then(function(dbArticle) {
     // create the handlebars object to send back
     var hbsObject = {
       scrape: false,
       articles: dbArticle
     };
-    console.log(dbArticle)
     res.render("index", hbsObject);
   })
   .catch(function(err) {
@@ -94,7 +89,6 @@ router.get("/scrape", function(req, res) {
 
 // Route for getting all Articles from the db
 router.get("/articles", function(req, res) {
-  console.log("in get without id");
   // Grab every document in the Articles collection
   db.Article.find({})
     .then(function(dbArticle) {
@@ -175,11 +169,9 @@ router.delete("/articles/:id", function(req, res) {
   db.Article.remove({ _id: req.params.id }, function(err, done) 
   {
     if (err) {
-      console.log(err);
       res.send(err);
     }
     else {
-      console.log(done);
       res.send(done);
     }
   });

@@ -6,8 +6,8 @@ function displayNotes(articleID){
     url: "/articles/" + articleID
   }).then(function(data) {
     //clear the note area
-    $("#exampleModalScrollable .noteContainer").empty();
-    $("#exampleModalScrollable").attr("data-id", articleID);
+    $("#noteModal .noteContainer").empty();
+    $("#noteModal").attr("data-id", articleID);
 
     //if there are notes, loop and display them in the modal card
     if (data.notes) {
@@ -18,18 +18,33 @@ function displayNotes(articleID){
       }
     }
     //display modal
-    $('#exampleModalScrollable').modal('show');
+    $('#noteModal').modal('show');
   });
 }
+
+$(document).ready(function() {
+  //$("#search").hide();
+});
+
+function triggerSearch(){
+  $(".searchLink").click(function() {
+    this.click();
+}).click();
+};
+
 $(document).on("click", ".btn-outline-success", function(event) {
   event.preventDefault();
   const pattern = $(".search").val();
+
   if (pattern) {
-    $.ajax({
-      method: "get",
-      url: "/search/" + pattern
-    });
+    $(".searchLink").attr("href", "/search/"+pattern);
+    triggerSearch();
   }
+});
+
+$(document).on("click", ".close", function(event) {
+  event.preventDefault();
+  location.reload(true);
 });
 
 $(document).on("click", "#note", function() {
@@ -42,8 +57,8 @@ $(document).on("click", "#note", function() {
 $(document).on("click", ".saveNote", function(event) {
   event.preventDefault();
   // Grab the article id and note text
-  var thisId = $("#exampleModalScrollable").attr("data-id");
-  var thisNote = $("#exampleFormControlTextarea1").val();
+  var thisId = $("#noteModal").attr("data-id");
+  var thisNote = $("#noteText").val();
 
   // Run a POST request to save the note
   $.ajax({
@@ -55,7 +70,7 @@ $(document).on("click", ".saveNote", function(event) {
   })
     .then(function() { //display the notes and cleanup the textarea;
       displayNotes(thisId)
-      $("#exampleFormControlTextarea1").val("");
+      $("#noteText").val("");
     });
 });
 
@@ -74,17 +89,15 @@ $(document).on("click", "#deleteArticle", function() {
 
 $(document).on("click", ".removeNote", function() {
   const noteIndex = $(this).attr("data-id");
-  const articleId = $("#exampleModalScrollable").attr("data-id")
-  console.log(noteIndex)
-  console.log(articleId)
+  const articleId = $("#noteModal").attr("data-id")
   // Run a POST request to change the note
   var id = {
-              "articleId": articleId, 
-              "noteIndex":noteIndex 
-            }
+    "articleId": articleId, 
+    "noteIndex":noteIndex 
+  }
   $.ajax({
      method: "delete",
-     url: "/note/" + JSON.stringify(id),
+     url: "/note/" + JSON.stringify(id), //id is an object
     }).then(function() {
       displayNotes(articleId)
     }

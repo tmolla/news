@@ -1,8 +1,4 @@
 <div id="wrapper">
-  
-  {{!-- <div id="articles"></div>--}}
-  <div id="notes"></div>
-
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-1">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -11,14 +7,14 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-          <a class="nav-link m-1" href="/scrape" style="border:1px solid green; color:lightgreen; border-radius:5px">Scrape Articles <span class="sr-only">(current)</span></a>
+          <a class="nav-link m-1" href="/scrape" style="border:1px solid green; color:lightgreen; border-radius:5px">Scrape Articles</a>
         </li>
         <li class="nav-item">
           <a class="nav-link m-1" href="/viewArticles" style="border:1px solid green; color:lightgreen; border-radius:5px">View Saved Articles</a>
         </li>
       </ul>
       <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2 search" type="search" placeholder="Search" aria-label="Search">
+        <input class="form-control mr-sm-2 search" type="search" placeholder="Search Saved Articles" aria-label="Search">
         <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
       </form>
     </div>
@@ -26,11 +22,20 @@
 
   <div class="jumbotron text-center mb-2">
     <h1 class="display-1">Scraping Articles</h1>
-    <hr class="my-2">
   </div>
-  <div class="alert alert-success mb-2" role="alert">
-    <strong>Viewing saved articles!</strong> To add or view notes, click on the "Notes" link.
-</div>
+  {{#if scrape}}
+    <div id="message">
+        <div class="alert alert-dark mb-2" role="alert">
+          <strong>Viewing scraped articles</strong> ... to save articles, click on the "save".
+        </div>
+    </div>
+  {{else}}
+     <div id="message">
+        <div class="alert alert-dark mb-2" role="alert">
+          <strong>Viewing saved articles </strong> ... to add or view notes, click on the "Notes".
+        </div>
+    </div>
+  {{/if}}
   <div class="card-columns">
   {{#if scrape}}
       {{#each articles}} 
@@ -39,7 +44,7 @@
             <div class="card-header p-0">
               <ul class="nav nav-pills card-header-pills">
                 <li class="nav-item">
-                  <a class="nav-link" href="{{link}}">View</a>
+                  <a class="nav-link" href="{{link}}", target="_blank">View</a>
                 </li>
                   <li class="nav-item">
                     <a class="nav-link" data-id="{{_id}}" data-link="{{link}}" data-title="{{title}}" id="saveArticle" href="#" ></i>Save</a>
@@ -58,13 +63,13 @@
           <div class="card-header p-0">
             <ul class="nav nav-pills card-header-pills">
               <li class="nav-item">
-                <a class="nav-link" href="{{link}}">View</a>
+                <a class="nav-link" href="{{link}}", target="_blank">View</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" data-id="{{_id}}" id="deleteArticle" href="#" >Delete</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" data-id="{{_id}}" id="note"  href="#" >Notes</a>
+                <a class="nav-link" data-id="{{_id}}" id="note"  href="#" >{{notes.length}} - Note(s)</a>
               </li>
             </ul>
           </div>
@@ -75,17 +80,18 @@
     {{/each}}
   {{/if}}
   </div>
-  <nav class="navbar fixed-bottom navbar-dark bg-primary">
-  <a class="navbar-brand" href="#!">Fixed bottom</a>
-</nav>
+  <nav class="navbar fixed-bottom navbar-dark bg-primary text-center">
+    <div class="container justify-content-center">
+      <a class="navbar-brand" href="#">Telahoun Molla &copy;2019</a>
+    </div>
+  </nav>
 <!-- Button trigger modal -->
-
 <!-- Modal -->
-<div class="modal" id="exampleModalScrollable" tabindex="-1" role="dialog" aria-labelledby="exampleModalScrollableLabel" aria-hidden="true">
+<div class="modal" id="noteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalCenteredLabel">Notes</h5>
+        <h5 class="modal-title" id="noteModalTitle">Notes</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">×</span>
         </button>
@@ -94,29 +100,27 @@
          <div class="formContainer">
               <form>
                 <div class="form-group">
-                  {{!-- <label for="exampleFormControlTextarea1">Enter note here and click on 'Submit' button to save:</label> --}}
-                  <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" placeholder="Enter new note here and click on 'Add Note' button to save"></textarea>
+                  {{!-- <label for="noteText">Enter note here and click on 'Submit' button to save:</label> --}}
+                  <textarea class="form-control" id="noteText" rows="3" placeholder="Enter new note here and click on 'Add Note' button to save"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary saveNote">Add Note</button>
               </form>
           </div>
           <div class="noteContainer">
-            {{!-- <div class="card">
-              <div class="card-body">
-                This is some text within a card block
-              </div>
-            </div> --}}
+            {{!-- will be dyanmically populated with notes --}}
           </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        {{!-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+        <button type="button" class="btn btn-secondary close" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-
+<div id="search">
+    <a class="nav-link m-1 d-none searchLink" href="#" style="border:1px solid green; color:lightgreen; border-radius:5px">isplay Search Articles</a>
+</div>
+  
 </div>
 
 <script
