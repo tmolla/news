@@ -18,8 +18,8 @@ if (process.env.NODE_ENV === "production"){
   app.use(express.static("client/build"));
 }
 app.use(express.static("public"));// Make public a static folder
-//mongoose.connect(process.env.MONGODB_URI || ???)
-mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true, useFindAndModify: false }); //Connect to Mongo
+mongoose.connect(process.env.MONGODB_URI || "mongodb://appscrape:qcDPkF89h2QwCUA@ds241097.mlab.com:41097/heroku_18vh90k8");
+//mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true, useFindAndModify: false }); //Connect to Mongo
 
 // Set Handlebars.
 var exphbs = require("express-handlebars");

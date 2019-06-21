@@ -1,15 +1,12 @@
 {
-  "name": "news",
+  "name": "scrape",
   "version": "1.0.0",
-  "description": "scrape news items and allow users to comment on new items",
+  "description": "scrape artiles from echo and  allow users to associate notes with them",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/tmolla/news.git"
-  },
+  "repository": "git+https://github.com/tmolla/news.git",
   "author": "Telahoun Molla",
   "license": "ISC",
   "bugs": {
